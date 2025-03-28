@@ -1,39 +1,32 @@
 package my.project.library.controllers;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
-import my.project.library.dao.AbstractDAO;
-import my.project.library.model.Book;
-import my.project.library.model.Reader;
-import org.springframework.beans.factory.annotation.Autowired;
+import my.project.library.services.AbstractService;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-public abstract class AbstractController<T> {
-    protected final AbstractDAO<T> dao;
+public abstract class AbstractController<T, ID> {
+    protected final AbstractService<T, ID> service;
     protected final String modelName;
     protected final String pluralModelName;
 
-    public AbstractController(AbstractDAO<T> dao, String modelName, String pluralModelName) {
-        this.dao = dao;
+    public AbstractController(AbstractService<T, ID> Service, String modelName, String pluralModelName) {
+        this.service = Service;
         this.modelName = modelName;
         this.pluralModelName = pluralModelName;
     }
 
 
-    public String showAll(Model model) {
-        List<T> items = dao.getAll().orElse(Collections.emptyList());
+    public String showAll(Model model, Integer page, Integer itemForPage, Boolean sort) {
+        List<T> items = service.findAll(page, itemForPage, sort);
         model.addAttribute(pluralModelName, items);
         return String.format("/%s/out_everyone", pluralModelName);
     }
 
 
-    public String showById(@PathVariable("id") long id, Model model) {
-        T item = dao.getById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Не найдена " + modelName + "с id = " + id));
+    public String showById(ID id, Model model) {
+        T item = service.findById(id);
         model.addAttribute(modelName, item);
         return String.format("/%s/out_by_id", pluralModelName);
     }
@@ -49,31 +42,29 @@ public abstract class AbstractController<T> {
         if (bindingResult.hasErrors()) {
             return String.format("%s/add", pluralModelName);
         }
-        dao.add(entity);
+        service.save(entity);
         return String.format("redirect:/%s", pluralModelName);
     }
 
 
-    public String editForm(long id, Model model) {
-        T entity = dao.getById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Не найдена " + modelName + "с id = " + id));
+    public String editForm(ID id, Model model) {
+        T entity = service.findById(id);
         model.addAttribute(modelName, entity);
         return String.format("%s/edit", pluralModelName);
     }
 
 
-    public String update(T entity, BindingResult bindingResult,
-                         long id) {
+    public String update(T entity, BindingResult bindingResult, ID id) {
         if (bindingResult.hasErrors()) {
             return String.format("%s/edit", pluralModelName);
         }
-        dao.update(entity);
+        service.update(entity);
         return String.format("redirect:/%s", pluralModelName);
     }
 
 
-    public String delete(long id) {
-        dao.deleteByID(id);
+    public String delete(ID id) {
+        service.deleteById(id);
         return String.format("redirect:/%s", pluralModelName);
     }
 }

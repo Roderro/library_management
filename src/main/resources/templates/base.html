@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="layout (content, title)">
+  <head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'Мое приложение'"></title>
+  </head>
+  <body>
+  <header>
+    <nav>
+      <ul>
+        <li><a th:href="@{/}">Главная</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section th:replace="${content}">
+      <!-- Здесь будет отображаться содержимое дочернего шаблона -->
+    </section>
+  </main>
+
+  <footer >
+    <p>&copy; 2024 Мое приложение</p>
+  </footer>
+
+</th:block>

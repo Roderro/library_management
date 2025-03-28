@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Добавление читателя</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Добавление читателя')}">
+
+<section th:fragment="content">
 <form th:method="POST" th:action="@{/readers}" th:object="${reader}">
     <label for="fio">Введите ФИО: </label>
     <input type="text" th:field="*{fio}" id="fio"/>
@@ -16,7 +14,5 @@
     <br/>
     <input type="submit" value="Create!"/>
 </form>
-
-
-</body>
+</section>
 </html>

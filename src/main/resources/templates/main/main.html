@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<a th:href="@{/readers}">Список читателей</a>
-<a th:href="@{/books}">Список книг</a>
-
-</body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Главная страница')}">
+<section th:fragment="content">
+    <a th:href="@{/readers}">Список читателей</a>
+    <a th:href="@{/books}">Список книг</a>
+</section>
 </html>

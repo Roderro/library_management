@@ -24,7 +24,6 @@ public class BookDAO extends AbstractDAO<Book> {
                 if (readerId == -1) {
                     book.setOwner(null);
                     updatedBook = (Book) session.merge(book);
-
                 } else {
                     Reader reader = session.get(Reader.class, readerId);
                     if (reader != null) {

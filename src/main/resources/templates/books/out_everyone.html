@@ -1,15 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Книги</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Книги')}">
 
-<div th:each="book : ${books}">
-  <a th:href="@{/books/{id}(id=${book.getId()})}"
-     th:text="${book.getName() + ', ' + book.getAuthor()+', ' + book.getYearOfPublication()}">book</a>
-</div>
-<a href="/books/add">Добавить книгу</a>
-</body>
+<section th:fragment="content">
+    <div th:each="book : ${books}">
+        <a th:href="@{/books/{id}(id=${book.getId()})}"
+           th:text="${book.getName() + ', ' + book.getAuthor()+', ' + book.getYearOfPublication()}">book</a>
+    </div>
+    <a href="/books/add">Добавить книгу</a>
+</section>
 </html>

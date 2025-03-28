@@ -1,10 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация о читателе</title>
-</head>
-<body>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Главная страница')}">
+<section th:fragment="content">
 <p th:text="${reader.getFio() + ', ' + reader.getBirthYear()}">VALUE</p>
 <p th:text="${reader.getId()}">VALUE</p>
 
@@ -16,7 +13,10 @@
 
     <div th:unless="${reader.getBorrowedBooks() == null or reader.getBorrowedBooks().isEmpty()}">
         <div th:each="book : ${reader.getBorrowedBooks()}" class="books">
-            <span th:text="${book.getName() + ', ' + book.getAuthor()+', ' + book.getYearOfPublication()}"></span>
+            <a th:href="@{/books/{id}(id=${book.id})}"
+               th:classappend="${book.isOverdue() ? 'overdue' : ''}">
+                <span th:text="${book.getName() + ', ' + book.getAuthor() + ', ' + book.getYearOfPublication()}"></span>
+            </a>
         </div>
     </div>
 </div>
@@ -28,7 +28,11 @@
 <form th:method="DELETE" th:action="@{/readers/{id}(id=${reader.getId()})}">
     <input type="submit" value="Удалить"/>
 </form>
-
-
-</body>
+</section>
 </html>
+
+<style>
+    .overdue {
+      color: red;
+    }
+</style>

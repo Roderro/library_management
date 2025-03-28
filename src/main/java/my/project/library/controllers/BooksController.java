@@ -1,48 +1,47 @@
 package my.project.library.controllers;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
-import my.project.library.dao.BookDAO;
-import my.project.library.dao.DAO;
-import my.project.library.dao.ReaderDAO;
 import my.project.library.model.Book;
 import my.project.library.model.Reader;
+import my.project.library.services.BooksService;
+import my.project.library.services.ReadersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-
 
 @Controller
 @RequestMapping("/books")
-public class BooksController extends AbstractController<Book> {
+public class BooksController extends AbstractController<Book, Long> {
     private static final String modelName = "book";
     private static final String pluralModelName = "books";
-    private final ReaderDAO readerDAO;
+    private final ReadersService readersService;
 
 
     @Autowired
-    public BooksController(BookDAO dao, ReaderDAO readerDAO) {
-        super(dao, modelName, pluralModelName);
-        this.readerDAO = readerDAO;
+    public BooksController(BooksService booksService,
+                           ReadersService readersService) {
+        super(booksService, modelName, pluralModelName);
+        this.readersService = readersService;
     }
 
 
     @Override
     @GetMapping()
-    public String showAll(Model model) {
-        return super.showAll(model);
+    public String showAll(Model model, @RequestParam(value = "page", required = false) Integer page,
+                          @RequestParam(value = "count", required = false) Integer booksPerPage,
+                          @RequestParam(value = "sort", required = false) Boolean sortByYearOfPublication) {
+        return super.showAll(model, page, booksPerPage, sortByYearOfPublication);
     }
 
 
     @GetMapping("/{id}")
     public String showById(@ModelAttribute("reader") Reader reader,
                            @PathVariable("id") long bookId, Model model) {
-        model.addAttribute("readers", readerDAO.getAll().orElse(Collections.emptyList()));
-        model.addAttribute("reader",reader);
+        model.addAttribute("readers", readersService.findAll(null, null, null));
+        model.addAttribute("reader", reader);
         return super.showById(bookId, model);
     }
 
@@ -60,35 +59,44 @@ public class BooksController extends AbstractController<Book> {
 
     @Override
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable("id") long bookId, Model model) {
+    public String editForm(@PathVariable("id") Long bookId, Model model) {
         return super.editForm(bookId, model);
     }
 
     @Override
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute(modelName) @Valid Book book, BindingResult bindingResult,
-                         @PathVariable("id") long bookId) {
-        return super.update(book, bindingResult, bookId);
+    public String update(@ModelAttribute(modelName) @Valid Book book, BindingResult bindingResult, @PathVariable("id") Long id) {
+        return super.update(book, bindingResult, id);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") long bookId) {
+    public String delete(@PathVariable("id") Long bookId) {
         return super.delete(bookId);
     }
 
+    @GetMapping("/search")
+    public String searchBooks(Model model, @RequestParam(value = "text", required = false) String text) {
+        BooksService booksService = (BooksService) service;
+        if (text != null) {
+            model.addAttribute("foundBooks", booksService.searchReaderStartWith(text));
+        }
+        return String.format("/%s/search", pluralModelName);
+    }
+
+
     @PatchMapping("/{id}/set_owner")
     public String setOwner(@ModelAttribute("reader") Reader reader,
-                           @PathVariable("id") long bookId) {
-        BookDAO bookDAO = (BookDAO) dao;
-        bookDAO.setOwner(bookId, reader.getId());
+                           @PathVariable("id") Long bookId) {
+        BooksService booksService = (BooksService) service;
+        booksService.setOwner(bookId, reader);
         return String.format("redirect:/%s/%d", pluralModelName, bookId);
     }
 
     @PatchMapping("/{id}/untie_owner")
-    public String untieOwner(@PathVariable("id") long bookId) {
-        BookDAO bookDAO = (BookDAO) dao;
-        bookDAO.setOwner(bookId, -1);
+    public String untieOwner(@PathVariable("id") Long bookId) {
+        BooksService booksService = (BooksService) service;
+        booksService.setOwner(bookId, null);
         return String.format("redirect:/%s/%d", pluralModelName, bookId);
     }
 }

@@ -3,6 +3,8 @@ package my.project.library.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Book")
 public class Book {
@@ -23,6 +25,12 @@ public class Book {
     @ManyToOne()
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private Reader owner;
+
+
+    private LocalDateTime dayOfCapture;
+
+    @Transient
+    private boolean isOverdue = false;
 
     public long getId() {
         return id;
@@ -63,4 +71,22 @@ public class Book {
     public void setOwner(Reader owner) {
         this.owner = owner;
     }
+
+    public LocalDateTime getDayOfCapture() {
+        return dayOfCapture;
+    }
+
+    public void setDayOfCapture(LocalDateTime dayOfCapture) {
+        this.dayOfCapture = dayOfCapture;
+    }
+
+    public boolean isOverdue() {
+        return isOverdue;
+    }
+
+    public void setOverdue(boolean overdue) {
+        isOverdue = overdue;
+    }
+
+
 }

@@ -23,7 +23,7 @@ public class Reader {
     private long id;
 
 
-    @Pattern(regexp = "[а-яА-Я]{2,} [а-яА-Я]{2,} [а-яА-Я]{2,}",message = "ФИО должна вводится в формате 'Иванов Иван Иванович'")
+    @Pattern(regexp = "[а-яА-Я]{2,} [а-яА-Я]{2,} [а-яА-Я]{2,}", message = "ФИО должна вводится в формате 'Иванов Иван Иванович'")
     @Column(name = "fio", unique = true)
     private String fio;
 
@@ -32,7 +32,7 @@ public class Reader {
     @Column(name = "birth_year")
     private int birthYear;
 
-    @OneToMany(mappedBy = "owner",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Book> borrowedBooks;
 
     @Column(name = "created_at", nullable = false, updatable = false)

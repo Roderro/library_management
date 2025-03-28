@@ -1,40 +1,39 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Информация о читателе</title>
-</head>
-<body>
-<p th:text="${book.getName() + ', ' + book.getAuthor()+', ' + book.getYearOfPublication()}">VALUE</p>
-<p th:text="${book.getId()}">VALUE</p>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Информация о книге')}">
 
-<div id="owner" th:if="${book.getOwner() == null}">
-    <p>Эта книга свободна. Кому назначить её?</p>
-    <form th:method="PATCH" th:action="@{/books/{id}/set_owner(id=${book.getId()})}">
-        <label for="reader">Выберите человека:</label>
-        <select th:object="${reader}" th:field="*{id}" id="reader">
-            <option th:each="reader : ${readers}" th:value="${reader.getId()}"
-                    th:text="${reader.getFio()}"></option>
-        </select>
-        <input type="submit" value="Назначить книгу"/>
+<section th:ftagment="content">
+    <p th:text="${book.getName() + ', ' + book.getAuthor()+', ' + book.getYearOfPublication()}">VALUE</p>
+    <p th:text="${book.getId()}">VALUE</p>
+
+    <div id="owner" th:if="${book.getOwner() == null}">
+        <p>Эта книга свободна. Кому назначить её?</p>
+        <form th:method="PATCH" th:action="@{/books/{id}/set_owner(id=${book.getId()})}">
+            <label for="reader">Выберите человека:</label>
+            <select th:object="${reader}" th:field="*{id}" id="reader">
+                <option th:each="reader : ${readers}" th:value="${reader.getId()}"
+                        th:text="${reader.getFio()}"></option>
+            </select>
+            <input type="submit" value="Назначить книгу"/>
+        </form>
+    </div>
+    <div th:unless="${book.getOwner() == null}">
+        <p>
+            Книга сейчас у:
+            <a th:href="@{/readers/{id}(id=${book.owner.getId()})}" th:text="${book.owner.getFio()}"></a>
+        </p>
+        <form th:method="PATCH" th:action="@{/books/{id}/untie_owner(id=${book.getId()})}">
+            <input type="submit" value="Освободить"/>
+        </form>
+    </div>
+
+
+    <form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}">
+        <input type="submit" value="Редактировать"/>
     </form>
-</div>
-<div th:unless="${book.getOwner() == null}">
-    <p th:text="${'Книга сейчас у: ' + book.getOwner().getFio()}">VALUE</p>
-    <form th:method="PATCH" th:action="@{/books/{id}/untie_owner(id=${book.getId()})}">
-        <input type="submit" value="Освободить"/>
+
+    <form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
+        <input type="submit" value="Удалить"/>
     </form>
-</div>
-
-
-<form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}">
-    <input type="submit" value="Редактировать"/>
-</form>
-
-<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
-    <input type="submit" value="Удалить"/>
-</form>
-
-
-</body>
+</section>
 </html>
