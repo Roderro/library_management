@@ -1,0 +1,47 @@
+services:
+  library-app-db:
+    image: postgres:15-alpine
+    container_name: library_app_db
+    environment:
+      POSTGRES_DB: library_app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d library_app_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  library:
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      library-app-db:
+        condition: service_healthy
+
+    ports:
+      - "8080:8080"
+    networks:
+      - my-network
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://library-app-db:5432/library_app_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_ADMIN_USERNAME=admin
+      - SPRING_ADMIN_PASSWORD=admin
+
+
+networks:
+  my-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: library_app_db
