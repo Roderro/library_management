@@ -4,7 +4,6 @@ package my.project.library.model;
 import jakarta.persistence.*;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,7 +20,6 @@ public class Reader {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
 
     @Pattern(regexp = "[а-яА-Я]{2,} [а-яА-Я]{2,} [а-яА-Я]{2,}", message = "ФИО должна вводится в формате 'Иванов Иван Иванович'")
     @Column(name = "fio", unique = true)

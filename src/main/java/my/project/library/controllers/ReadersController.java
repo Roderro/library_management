@@ -68,4 +68,12 @@ public class ReadersController extends AbstractController<Reader, Long> {
     }
 
 
+    @GetMapping("/search")
+    public String searchReader(Model model, @RequestParam(value = "text", required = false) String text) {
+        ReadersService readersService = (ReadersService) service;
+        if (text != null) {
+            model.addAttribute("foundReaders", readersService.searchReaderContaining(text));
+        }
+        return String.format("/%s/search", pluralModelName);
+    }
 }

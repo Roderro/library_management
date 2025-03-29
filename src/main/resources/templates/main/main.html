@@ -2,7 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       th:replace="~{base :: layout(~{::section}, 'Главная страница')}">
 <section th:fragment="content">
-    <a th:href="@{/readers}">Список читателей</a>
-    <a th:href="@{/books}">Список книг</a>
+    <ul style="list-style-type:none; padding: 0; margin: 0;">
+        <li><a th:href="@{/readers}">Список читателей</a></li>
+        <li><a th:href="@{/readers/search}">Поиск читателей</a></li>
+        <li><a th:href="@{/books}">Список книг</a></li>
+        <li><a th:href="@{/books/search}">Поиск книг</a></li>
+    </ul>
 </section>
 </html>

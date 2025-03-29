@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base :: layout(~{::section}, 'Поиск книг')}">
+
+<section th:fragment="content">
+  <form th:method="GET" th:action="@{/readers/search}">
+    <label for="text">Введите поисковой запрос: </label>
+    <input type="text" name="text" id="text"/>
+    <br/>
+    <input type="submit" value="Искать!"/>
+    <div th:if="${foundReaders != null}">
+      <div th:if="${not #lists.isEmpty(foundReaders)}">
+        <h2>Результаты поиска:</h2>
+        <ul>
+          <li th:each="reader : ${foundReaders}">
+            <a th:href="@{/readers/{id}(id=${reader.id})}"
+               th:text="${reader.fio + ', ' + reader.birthYear}"></a>
+            <br/> <!-- Перенос строки -->
+          </li>
+        </ul>
+      </div>
+
+
+      <div th:if="${#lists.isEmpty(foundReaders)}">
+        <p>Читатели не найдены. Попробуйте другой запрос.</p>
+      </div>
+    </div>
+  </form>
+</section>
+</html>

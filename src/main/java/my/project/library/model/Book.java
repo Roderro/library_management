@@ -2,6 +2,10 @@ package my.project.library.model;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDateTime;
 
@@ -13,12 +17,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "Название не должна быть пустым")
     @Column(name = "name")
     private String name;
 
+    @Pattern(regexp = "[а-яА-Я]{2,} [а-яА-Я]{2,} [а-яА-Я]{2,}", message = "ФИО должна вводится в формате 'Иванов Иван Иванович'")
     @Column(name = "author")
     private String author;
 
+    @NotNull(message = "Дата публикации не должна быть пустой")
     @Column(name = "year_of_publication")
     private int yearOfPublication;
 

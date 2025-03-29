@@ -79,7 +79,7 @@ public class BooksController extends AbstractController<Book, Long> {
     public String searchBooks(Model model, @RequestParam(value = "text", required = false) String text) {
         BooksService booksService = (BooksService) service;
         if (text != null) {
-            model.addAttribute("foundBooks", booksService.searchReaderStartWith(text));
+            model.addAttribute("foundBooks", booksService.searchBookStartWith(text));
         }
         return String.format("/%s/search", pluralModelName);
     }

@@ -29,9 +29,9 @@ public class BooksService extends AbstractService<Book, Long> {
         return "yearOfPublication";
     }
 
-    public List<Book> searchReaderStartWith(String text) {
-        BookRepository readerRepository = (BookRepository) repository;
-        return readerRepository.findByNameStartingWith(text);
+    public List<Book> searchBookStartWith(String text) {
+        BookRepository bookRepository = (BookRepository) repository;
+        return bookRepository.findByNameStartingWith(text);
     }
 
     @Transactional

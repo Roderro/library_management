@@ -8,7 +8,7 @@
         <div style="color:red" th:if="${#fields.hasErrors('fio')}" th:errors="*{fio}">Name Error</div>
         <br/>
         <label for="birthYear">Введите год рождения: </label>
-        <input type="text" th:field="*{birthYear}" id="birthYear"/>
+        <input type="number" th:field="*{birthYear}" id="birthYear"/>
         <div style="color:red" th:if="${#fields.hasErrors('birthYear')}" th:errors="*{birthYear}">birthYear Error</div>
         <br/>
         <input type="submit" value="Обновить"/>
